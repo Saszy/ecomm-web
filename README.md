@@ -1,16 +1,17 @@
-# 📱 E-Commerce Mobile App
+# 🛍️ E-Commerce Web App
 
-A modern, responsive e-commerce mobile application built with React Native, featuring product browsing, category management, and a beautiful user interface optimized for mobile devices.
+A modern, cross-platform e-commerce application built with **React Native Web** and **Next.js**, featuring product browsing, category management, user authentication, and a beautiful responsive interface that works on web, Android, and iOS.
 
 ## ✨ Features
 
-- **Mobile-First Design**: Optimized for mobile devices with touch-friendly interactions
-- **Product Management**: Browse products by categories with detailed product pages
-- **Category System**: Organized product categorization with dedicated category pages
-- **Navigation**: Smooth navigation between screens using React Navigation
-- **Responsive UI**: Adaptive layouts for different screen sizes
-- **Touch Interactions**: Native mobile gestures and interactions
-- **TypeScript**: Full type safety and better development experience
+- **🌐 Cross-Platform**: Single codebase for Web, Android, and iOS
+- **🔐 User Authentication**: Username-based login with persistent sessions
+- **🛍️ Product Catalog**: Browse products by categories with dynamic routing
+- **❤️ Like & Share**: Heart icons for favorites and share functionality
+- **📱 Responsive Design**: Modern UI that works on all screen sizes
+- **🎨 Dynamic Icons**: Smart emoji icons based on product/category names
+- **⚡ Fast Performance**: Next.js optimization with React Native Web
+- **🔒 Type Safety**: Full TypeScript support throughout the application
 
 ## 🚀 Quick Start
 
@@ -18,16 +19,14 @@ A modern, responsive e-commerce mobile application built with React Native, feat
 
 - **Node.js** 18.17+ 
 - **npm** 9+ or **yarn**
-- **React Native CLI** (for development)
-- **Android Studio** (for Android development)
-- **Xcode** (for iOS development, macOS only)
+- **Git** for version control
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd EcommMobile
+   git clone https://github.com/Saszy/ecomm-web.git
+   cd ecomm-web
    ```
 
 2. **Install dependencies**
@@ -37,200 +36,211 @@ A modern, responsive e-commerce mobile application built with React Native, feat
    yarn install
    ```
 
-3. **Start the Metro bundler**
+3. **Run the development server**
    ```bash
-   npm start
+   npm run web
    # or
-   yarn start
+   yarn web
    ```
 
-4. **Run on device/emulator**
-
-   **Android:**
-   ```bash
-   npm run android
-   # or
-   yarn android
-   ```
-
-   **iOS:**
-   ```bash
-   npm run ios
-   # or
-   yarn ios
-   ```
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📱 Available Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Start Metro bundler |
+| `npm run web` | Start Next.js development server |
+| `npm run build` | Build the application for production |
+| `npm run start` | Start production server |
 | `npm run android` | Run on Android device/emulator |
 | `npm run ios` | Run on iOS device/simulator |
-| `npm test` | Run test suite |
-| `npm run lint` | Run ESLint |
 
 ## 🏗️ Project Structure
 
 ```
-EcommMobile/
+ecomm-web/
 ├── src/
 │   ├── components/          # Reusable UI components
-│   ├── screens/            # Screen components
-│   │   ├── HomeScreen.tsx
-│   │   ├── CategoryScreen.tsx
-│   │   ├── ProductScreen.tsx
-│   │   ├── CategoriesScreen.tsx
-│   │   └── LoginScreen.tsx
-│   ├── navigation/         # Navigation configuration
-│   ├── data/              # Sample data and API functions
-│   │   └── sampleData.ts
-│   └── types/             # TypeScript type definitions
-│       └── navigation.ts
-├── App.tsx                 # Main app component
-├── index.js               # App entry point
+│   │   ├── home/           # Home page components
+│   │   ├── layout/         # Layout components
+│   │   └── products/       # Product-related components
+│   ├── contexts/           # React Context providers
+│   │   └── AuthContext.tsx # Authentication state management
+│   ├── data/               # Sample data and API functions
+│   │   └── sampleData.ts   # Product and category data
+│   ├── pages/              # Next.js pages (file-based routing)
+│   │   ├── _app.tsx        # Custom App component
+│   │   ├── _document.tsx   # Custom Document component
+│   │   ├── index.tsx       # Home page
+│   │   ├── login.tsx       # Login page
+│   │   ├── categories.tsx  # Categories listing
+│   │   ├── category/       # Dynamic category routes
+│   │   │   └── [slug].tsx  # Category detail page
+│   │   └── product/        # Dynamic product routes
+│   │       └── [id].tsx    # Product detail page
+│   ├── screens/            # React Native screen components
+│   ├── styles/             # Global styles
+│   │   └── globals.css     # Global CSS
+│   └── types/              # TypeScript type definitions
+│       ├── navigation.ts   # Navigation types
+│       └── product.ts      # Product and category types
+├── App.tsx                 # React Native main app component
+├── index.js               # React Native entry point
+├── next.config.js         # Next.js configuration
 ├── package.json           # Dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
-├── babel.config.js        # Babel configuration
+├── babel.config.js        # Babel configuration for React Native
 └── metro.config.js        # Metro bundler configuration
 ```
 
-## 🎯 Key Components
+## 🎯 Key Features
 
-### **Screens**
-- **HomeScreen**: Main dashboard with categories and featured products
-- **CategoryScreen**: Products filtered by category
-- **ProductScreen**: Detailed product information with image gallery
-- **CategoriesScreen**: Browse all available categories
-- **LoginScreen**: User authentication (login/signup)
+### **User Authentication**
+- **Login System**: Username-based authentication (no password required)
+- **Session Management**: Persistent login state with localStorage
+- **User Header**: Personalized welcome message with logout functionality
+- **Protected Routes**: Automatic redirects for authenticated users
 
-### **Navigation**
-- Stack-based navigation between screens
-- Dynamic screen titles based on route parameters
-- Smooth transitions and animations
+### **Product Management**
+- **Smart Icons**: Dynamic emoji icons based on product names and categories
+- **Category System**: 8 main categories with subcategories
+- **Product Details**: Rich product information with tags and descriptions
+- **Like & Share**: Heart icons for favorites and share functionality
 
-### **Data Management**
-- Sample product and category data
-- Helper functions for data filtering and retrieval
-- Type-safe data structures
+### **Navigation & Routing**
+- **File-based Routing**: Next.js automatic route generation
+- **Dynamic Routes**: `/category/[slug]` and `/product/[id]` pages
+- **Breadcrumb Navigation**: Easy navigation between pages
+- **Responsive Design**: Works seamlessly on all devices
 
 ## 🛠️ Technology Stack
 
-- **Framework**: React Native 0.72.6
-- **Language**: TypeScript 4.8.4
-- **Navigation**: React Navigation 6
-- **State Management**: React Hooks (useState, useCallback)
-- **Styling**: React Native StyleSheet
-- **Development**: Metro bundler, Babel
+- **Frontend Framework**: Next.js 15.5.0
+- **Cross-Platform**: React Native Web
+- **Language**: TypeScript 5.0+
+- **Styling**: Inline CSS with modern design patterns
+- **State Management**: React Context API + Hooks
+- **Authentication**: Custom AuthContext with localStorage
+- **Build Tools**: Babel, Metro bundler
+- **Package Manager**: npm
 
-## 📱 Mobile-Specific Features
+## 🌐 Web Development
 
-### **Touch Interactions**
-- TouchableOpacity for button interactions
-- ScrollView for scrollable content
-- FlatList for optimized list rendering
-- Image handling with proper sizing
+### **Next.js Features**
+- File-based routing system
+- Server-side rendering capabilities
+- Automatic code splitting
+- Hot reloading for development
+- Production build optimization
 
-### **Responsive Design**
-- Dynamic dimensions using Dimensions API
-- Flexible layouts with flexbox
-- Platform-specific styling considerations
-- Safe area handling for notches and status bars
+### **React Native Web**
+- Native mobile components on web
+- Touch interactions and gestures
+- Responsive mobile-first design
+- Cross-platform component library
 
-### **Performance**
-- Optimized image loading
-- Efficient list rendering with FlatList
-- Minimal re-renders with proper state management
+## 📱 Mobile Development
+
+### **React Native Setup**
+- Metro bundler configuration
+- Babel configuration for React Native
+- Platform-specific optimizations
+- Native navigation support
+
+### **Cross-Platform Benefits**
+- Single codebase for all platforms
+- Consistent UI/UX across devices
+- Shared business logic
+- Platform-specific enhancements
 
 ## 🔧 Configuration
 
-### **Metro Configuration**
-- Optimized for React Native development
-- Support for TypeScript and modern JavaScript features
-
-### **Babel Configuration**
-- React Native preset
-- Reanimated plugin for smooth animations
+### **Next.js Configuration**
+```javascript
+// next.config.js
+module.exports = {
+  webpack: (config) => {
+    // React Native Web support
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react-native$': 'react-native-web',
+    };
+    return config;
+  },
+};
+```
 
 ### **TypeScript Configuration**
-- Strict type checking
-- React Native specific optimizations
+- Strict type checking enabled
+- React Native Web types included
 - Path aliases for clean imports
-
-## 📱 Platform Support
-
-- **Android**: API level 21+ (Android 5.0+)
-- **iOS**: iOS 12.0+
-- **Cross-platform**: Shared codebase with platform-specific optimizations
+- Modern ES6+ features support
 
 ## 🚀 Development Workflow
 
-1. **Start development server**: `npm start`
-2. **Run on device**: `npm run android` or `npm run ios`
-3. **Make changes**: Edit files in `src/` directory
-4. **Hot reload**: Changes automatically reflect on device
-5. **Debug**: Use React Native Debugger or Chrome DevTools
-
-## 🧪 Testing
-
-```bash
-# Run tests
-npm test
-
-# Run with coverage
-npm test -- --coverage
-
-# Run specific test file
-npm test -- ComponentName.test.tsx
-```
+1. **Start development server**: `npm run web`
+2. **Make changes**: Edit files in `src/` directory
+3. **Hot reload**: Changes automatically reflect in browser
+4. **Test on mobile**: Use `npm run android` or `npm run ios`
+5. **Build for production**: `npm run build`
 
 ## 📦 Building for Production
 
-### **Android APK**
+### **Web Build**
 ```bash
-cd android
-./gradlew assembleRelease
+npm run build
+npm run start
 ```
 
-### **iOS Archive**
+### **Mobile Builds**
 ```bash
-cd ios
-xcodebuild -workspace EcommMobile.xcworkspace -scheme EcommMobile archive
+# Android
+npm run android
+
+# iOS
+npm run ios
 ```
 
 ## 🔍 Troubleshooting
 
 ### **Common Issues**
 
-1. **Metro bundler issues**
+1. **Port already in use**
    ```bash
-   npm start -- --reset-cache
+   # Kill existing processes
+   pkill -f "next dev"
+   npm run web
    ```
 
-2. **Android build issues**
+2. **Build errors**
    ```bash
-   cd android && ./gradlew clean
+   # Clear cache and reinstall
+   rm -rf node_modules .next
+   npm install
+   npm run web
    ```
 
-3. **iOS build issues**
+3. **TypeScript errors**
    ```bash
-   cd ios && rm -rf build && pod install
+   # Check for type issues
+   npx tsc --noEmit
    ```
 
 ### **Performance Tips**
 
-- Use `FlatList` instead of `ScrollView` for long lists
+- Use React.memo for expensive components
 - Optimize images with proper dimensions
-- Minimize re-renders with `useCallback` and `useMemo`
-- Use `React.memo` for expensive components
+- Implement lazy loading for large lists
+- Use proper key props for list items
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
@@ -239,10 +249,22 @@ This project is licensed under the MIT License.
 ## 🆘 Support
 
 For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review React Native documentation
+- Create an issue in the [GitHub repository](https://github.com/Saszy/ecomm-web)
+- Check the troubleshooting section above
+- Review Next.js and React Native Web documentation
+
+## 🌟 What's Next?
+
+- [ ] Shopping cart functionality
+- [ ] User profiles and preferences
+- [ ] Payment integration
+- [ ] Admin dashboard
+- [ ] Real-time notifications
+- [ ] Advanced search and filtering
+- [ ] Multi-language support
 
 ---
 
-**Happy coding! 🎉** 
+**Happy coding! 🎉**
+
+*Built with ❤️ using React Native Web + Next.js* 
