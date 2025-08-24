@@ -88,20 +88,52 @@ const getProductIcon = (productName: string, categoryName: string) => {
 };
 
 export default function HomePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, trackEvent, getUserEvents } = useAuth();
   const [likedProducts, setLikedProducts] = useState<Set<number>>(new Set());
 
-  const toggleLike = (productId: number) => {
+  const toggleLike = (productId: number, productName: string, categoryName: string) => {
     const newLikedProducts = new Set(likedProducts);
-    if (newLikedProducts.has(productId)) {
+    const isLiked = newLikedProducts.has(productId);
+    
+    if (isLiked) {
       newLikedProducts.delete(productId);
+      // Track unlike event
+      trackEvent({
+        eventType: 'unlike',
+        productId,
+        productName,
+        categoryName,
+        metadata: { action: 'removed_from_favorites' }
+      });
     } else {
       newLikedProducts.add(productId);
+      // Track like event
+      trackEvent({
+        eventType: 'like',
+        productId,
+        productName,
+        categoryName,
+        metadata: { action: 'added_to_favorites' }
+      });
     }
+    
     setLikedProducts(newLikedProducts);
   };
 
-  const shareProduct = (product: any) => {
+  const shareProduct = (product: any, categoryName: string) => {
+    // Track share event
+    trackEvent({
+      eventType: 'share',
+      productId: product.id,
+      productName: product.name,
+      categoryName,
+      metadata: { 
+        shareMethod: 'web_share_api',
+        productPrice: product.price,
+        productBrand: product.brand
+      }
+    });
+
     if (navigator.share) {
       navigator.share({
         title: product.name,
@@ -117,6 +149,17 @@ export default function HomePage() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const userEvents = getUserEvents();
+  const recentActivity = userEvents.slice(-3).reverse();
+
   return (
     <div style={styles.container}>
       <div style={styles.content}>
@@ -126,10 +169,53 @@ export default function HomePage() {
             <div style={styles.userInfo}>
               <span style={styles.welcomeText}>Welcome back,</span>
               <span style={styles.userName}>{user.username}!</span>
+              <div style={styles.userDetails}>
+                <span style={styles.userId}>ID: {user.id}</span>
+                <span style={styles.userCreated}>Member since {formatDate(user.createdAt)}</span>
+                {user.email && <span style={styles.userEmail}>📧 {user.email}</span>}
+              </div>
             </div>
-            <button onClick={logout} style={styles.logoutButton}>
-              Logout
-            </button>
+            <div style={styles.userActions}>
+              <Link href="/profile" style={styles.profileLink}>
+                <button style={styles.profileButton}>
+                  👤 Profile
+                </button>
+              </Link>
+              <button onClick={logout} style={styles.logoutButton}>
+                Logout
+              </button>
+              {userEvents.length > 0 && (
+                <div style={styles.activityBadge}>
+                  📊 {userEvents.length} events tracked
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Activity (for logged-in users) */}
+        {user && recentActivity.length > 0 && (
+          <div style={styles.activitySection}>
+            <h3 style={styles.activityTitle}>Recent Activity</h3>
+            <div style={styles.activityList}>
+              {recentActivity.map((event) => (
+                <div key={event.id} style={styles.activityItem}>
+                  <span style={styles.activityIcon}>
+                    {event.eventType === 'like' ? '❤️' : 
+                     event.eventType === 'unlike' ? '🤍' : 
+                     event.eventType === 'share' ? '📤' : '👁️'}
+                  </span>
+                  <span style={styles.activityText}>
+                    {event.eventType === 'like' ? 'Liked' : 
+                     event.eventType === 'unlike' ? 'Unliked' : 
+                     event.eventType === 'share' ? 'Shared' : 'Viewed'} {event.productName}
+                  </span>
+                  <span style={styles.activityTime}>
+                    {formatDate(event.timestamp)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -204,14 +290,14 @@ export default function HomePage() {
                         ...styles.likeButton,
                         ...(likedProducts.has(product.id) && styles.likedButton)
                       }}
-                      onClick={() => toggleLike(product.id)}
+                      onClick={() => toggleLike(product.id, product.name, category?.name || '')}
                       title={likedProducts.has(product.id) ? 'Remove from favorites' : 'Add to favorites'}
                     >
                       {likedProducts.has(product.id) ? '❤️' : '🤍'}
                     </button>
                     <button 
                       style={{...styles.actionButton, ...styles.shareButton}}
-                      onClick={() => shareProduct(product)}
+                      onClick={() => shareProduct(product, category?.name || '')}
                       title="Share product"
                     >
                       📤
@@ -259,10 +345,10 @@ const styles = {
   userHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: 'white',
     borderRadius: '12px',
-    padding: '16px 24px',
+    padding: '20px 24px',
     marginBottom: '24px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
     border: '1px solid #e2e8f0',
@@ -278,9 +364,51 @@ const styles = {
     fontWeight: '500',
   },
   userName: {
-    fontSize: '20px',
+    fontSize: '24px',
     fontWeight: '700',
     color: '#1e293b',
+  },
+  userDetails: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '2px',
+    marginTop: '8px',
+  },
+  userId: {
+    fontSize: '12px',
+    color: '#6b7280',
+    fontFamily: 'monospace',
+  },
+  userCreated: {
+    fontSize: '12px',
+    color: '#6b7280',
+  },
+  userEmail: {
+    fontSize: '12px',
+    color: '#6b7280',
+  },
+  userActions: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '8px',
+    alignItems: 'flex-end',
+  },
+  profileLink: {
+    textDecoration: 'none',
+  },
+  profileButton: {
+    backgroundColor: '#e0e7ff',
+    color: '#3b82f6',
+    border: '2px solid #bfdbfe',
+    borderRadius: '8px',
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
   },
   logoutButton: {
     backgroundColor: '#ef4444',
@@ -292,6 +420,54 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+  },
+  activityBadge: {
+    fontSize: '12px',
+    color: '#059669',
+    backgroundColor: '#ecfdf5',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    border: '1px solid #a7f3d0',
+  },
+  activitySection: {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    padding: '20px',
+    marginBottom: '24px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+    border: '1px solid #e2e8f0',
+  },
+  activityTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#1e293b',
+    margin: '0 0 16px 0',
+  },
+  activityList: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '8px',
+  },
+  activityItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '8px 12px',
+    backgroundColor: '#f8fafc',
+    borderRadius: '8px',
+    border: '1px solid #e2e8f0',
+  },
+  activityIcon: {
+    fontSize: '16px',
+  },
+  activityText: {
+    fontSize: '14px',
+    color: '#374151',
+    flex: 1,
+  },
+  activityTime: {
+    fontSize: '12px',
+    color: '#6b7280',
   },
   header: {
     textAlign: 'center' as const,

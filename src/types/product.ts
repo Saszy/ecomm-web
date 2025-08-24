@@ -1,27 +1,28 @@
 export interface Product {
-  id: string
+  id: number
   name: string
   description: string
   price: number
   originalPrice?: number
-  images: string[]
+  images?: string[]
   category: string
   subcategory?: string
   brand: string
-  rating: number
-  reviewCount: number
-  inStock: boolean
+  rating?: number
+  reviewCount?: number
+  inStock?: boolean
   tags: string[]
   specifications?: Record<string, string>
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Category {
-  id: string
+  id: number
   name: string
   description: string
-  image: string
+  image?: string
+  slug?: string
   productCount: number
   subcategories?: string[]
 }

@@ -4,7 +4,9 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
 
@@ -23,7 +25,7 @@ export default function LoginPage() {
     
     // Simulate API call delay
     setTimeout(() => {
-      login(username.trim());
+      login(username.trim(), email.trim() || undefined);
       setIsLoading(false);
       router.push('/');
     }, 1000);
@@ -45,7 +47,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} style={styles.form}>
             <div style={styles.inputGroup}>
               <label htmlFor="username" style={styles.label}>
-                Username
+                Username *
               </label>
               <input
                 id="username"
@@ -58,6 +60,34 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
             </div>
+
+            <div style={styles.emailToggle}>
+              <button
+                type="button"
+                onClick={() => setShowEmail(!showEmail)}
+                style={styles.toggleButton}
+                disabled={isLoading}
+              >
+                {showEmail ? 'Remove Email' : 'Add Email (Optional)'}
+              </button>
+            </div>
+
+            {showEmail && (
+              <div style={styles.inputGroup}>
+                <label htmlFor="email" style={styles.label}>
+                  Email (Optional)
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  style={styles.input}
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             <button 
               type="submit" 
@@ -73,6 +103,11 @@ export default function LoginPage() {
               Don't have an account?{' '}
               <span style={styles.linkText}>Just enter any username to continue</span>
             </p>
+            {showEmail && (
+              <p style={styles.emailInfo}>
+                💡 Adding an email helps with account recovery and notifications
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -140,6 +175,21 @@ const styles = {
     transition: 'border-color 0.2s ease',
     boxSizing: 'border-box' as const,
   },
+  emailToggle: {
+    marginBottom: '20px',
+    textAlign: 'center' as const,
+  },
+  toggleButton: {
+    backgroundColor: 'transparent',
+    color: '#3b82f6',
+    border: '1px solid #3b82f6',
+    borderRadius: '6px',
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
   submitButton: {
     width: '100%',
     backgroundColor: '#3b82f6',
@@ -159,10 +209,19 @@ const styles = {
   footerText: {
     fontSize: '14px',
     color: '#6b7280',
-    margin: '0',
+    margin: '0 0 12px 0',
   },
   linkText: {
     color: '#3b82f6',
     fontWeight: '500',
+  },
+  emailInfo: {
+    fontSize: '12px',
+    color: '#059669',
+    backgroundColor: '#ecfdf5',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    margin: '0',
+    border: '1px solid #a7f3d0',
   },
 };
